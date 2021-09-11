@@ -8,7 +8,7 @@ public enum StackViewConfig {
 }
 
 open class StackView: UIStackView {
-    public init(axis: NSLayoutConstraint.Axis, configs: [StackViewConfig], views: [UIView]) {
+    public init(axis: NSLayoutConstraint.Axis, configs: [StackViewConfig], views: [UIView?]) {
         super.init(frame: .zero)
         self.axis = axis
         
@@ -24,9 +24,19 @@ open class StackView: UIStackView {
             case .distribution(let value): self.distribution = value
             }
         }
-        for index in (0..<views.count) {
-            let view = views[index]
-            self.addArrangedSubview(view)
+        self.addArrangedSubviewList(views)
+    }
+    
+    open func addArrangedSubviewList(_ views: [UIView?]) {
+        let _views = views.compactMap { view -> UIView? in return view }
+        for index in (0..<_views.count) {
+            let view = _views[index]
+            if let forEachView = view as? ForEachItem {
+                self.addArrangedSubviewList(forEachView.views)
+                continue
+            } else {
+                self.addArrangedSubview(view)
+            }
             if let space = view.spaceAfterInStackView {
                 if #available(iOS 11, *) {
                     self.setCustomSpacing(space, after: view)
@@ -54,10 +64,10 @@ open class StackView: UIStackView {
 }
 
 open class VStackView: StackView {
-    public convenience init(_ views: UIView..., configs: [StackViewConfig] = []) {
+    public convenience init(_ views: UIView?..., configs: [StackViewConfig] = []) {
         self.init(views: views, configs: configs)
     }
-    public init(views: [UIView], configs: [StackViewConfig] = []) {
+    public init(views: [UIView?], configs: [StackViewConfig] = []) {
         super.init(axis: .vertical, configs: configs, views: views)
     }
     
@@ -67,10 +77,10 @@ open class VStackView: StackView {
 }
 
 open class HStackView: StackView {
-    public convenience init(_ views: UIView..., configs: [StackViewConfig] = []) {
+    public convenience init(_ views: UIView?..., configs: [StackViewConfig] = []) {
         self.init(views: views, configs: configs)
     }
-    public init(views: [UIView], configs: [StackViewConfig] = []) {
+    public init(views: [UIView?], configs: [StackViewConfig] = []) {
         super.init(axis: .horizontal, configs: configs, views: views)
     }
     
