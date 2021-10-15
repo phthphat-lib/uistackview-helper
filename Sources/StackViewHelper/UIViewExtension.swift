@@ -27,3 +27,44 @@ extension UIView {
         }
     }
 }
+
+extension UIView {
+    public var isHiddenInStackView: Bool {
+        get {
+            return isHidden
+        }
+        set {
+            if isHidden != newValue {
+                isHidden = newValue
+                guard let stV = self.superview as? UIStackView else { return }
+                if let currIndex = stV.arrangedSubviews.firstIndex(of: self),
+                   currIndex - 1 >= 0 {
+                    let preView = stV.arrangedSubviews[currIndex - 1]
+                    let spaceAfter = (isHidden ? preView.spaceAfterInStackView : self.spaceBeforeInStackView) ?? stV.spacing
+                    if #available(iOS 11.0, *) {
+                        stV.setCustomSpacing(spaceAfter, after: preView)
+                    } else {
+                        // Fallback on earlier versions
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+public final class Space: UIView {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.backgroundColor = .clear
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        self.backgroundColor = .clear
+    }
+    
+    public override func draw(_ rect: CGRect) {
+        //Do nothing
+    }
+}

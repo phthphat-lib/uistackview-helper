@@ -14,19 +14,20 @@ open class AlternateStackView: UIView {
     private(set) var topPaddingConstraint: NSLayoutConstraint?
     private(set) var bottomPaddingConstraint: NSLayoutConstraint?
     
-    public init(axis: NSLayoutConstraint.Axis, views: [UIView], spacing: CGFloat = 0) {
+    public init(axis: NSLayoutConstraint.Axis, views: [UIView?], spacing: CGFloat = 0) {
         super.init(frame: .zero)
         addViewsToParent(views, axis: axis, spacing: spacing)
     }
-    convenience public init(axis: NSLayoutConstraint.Axis, _ views: UIView..., spacing: CGFloat = 0) {
+    convenience public init(axis: NSLayoutConstraint.Axis, _ views: UIView?..., spacing: CGFloat = 0) {
         self.init(axis: axis, views: views, spacing: spacing)
     }
     required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    fileprivate func addViewsToParent(_ views: [UIView], axis: NSLayoutConstraint.Axis, spacing: CGFloat) {
-        for (index, view) in views.enumerated() {
+    fileprivate func addViewsToParent(_ views: [UIView?], axis: NSLayoutConstraint.Axis, spacing: CGFloat) {
+        let _views = views.compactMap { $0 }
+        for (index, view) in _views.enumerated() {
             view.translatesAutoresizingMaskIntoConstraints = false
             self.addSubview(view)
             if index == 0 {
@@ -63,8 +64,8 @@ open class AlternateStackView: UIView {
             }
             
             if index > 0 {
-                let preView = views[index - 1]
-                let firstView = views[0]
+                let preView = _views[index - 1]
+                let firstView = _views[0]
                 let realSpace = preView.spaceAfterInStackView ?? spacing
                 if axis == .vertical {
                     view.topAnchor.constraint(equalTo: preView.bottomAnchor, constant: realSpace).isActive = true

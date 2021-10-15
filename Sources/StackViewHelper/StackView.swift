@@ -27,37 +27,6 @@ open class StackView: UIStackView {
         self.addArrangedSubviewList(views)
     }
     
-    open func addArrangedSubviewList(_ views: [UIView?]) {
-        let _views = views.compactMap { view -> UIView? in return view }
-        for index in (0..<_views.count) {
-            let view = _views[index]
-            if let forEachView = view as? ForEachItem {
-                self.addArrangedSubviewList(forEachView.views)
-                continue
-            } else {
-                self.addArrangedSubview(view)
-            }
-            if let space = view.spaceAfterInStackView {
-                if #available(iOS 11, *) {
-                    self.setCustomSpacing(space, after: view)
-                } else {
-                    if space == self.spacing {
-                        continue
-                    }
-                    let differentSpacing = space - 2 * self.spacing
-                    if differentSpacing >= 0 {
-                        let v = UIView()
-                        v.backgroundColor = .clear
-                        v.heightAnchor.constraint(equalToConstant: differentSpacing).isActive = true
-                        self.addArrangedSubview(v)
-                    } else {
-                        print("Can't set custom spacing")
-                    }
-                }
-            }
-        }
-    }
-    
     public required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -95,7 +64,7 @@ open class WrapView: UIView {
     public init(_ view: UIView, padding: UIEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: 0)) {
         super.init(frame: .zero)
         self.addSubview(view)
-        view.fillSuperview()
+        view.fillSuperview(padding: padding, inSafeArea: false)
     }
     
     required public init?(coder: NSCoder) {
