@@ -7,7 +7,11 @@
 
 import UIKit
 
-//Because built in stackview can't show shadow
+/**
+ Don't use frequently because of memory usage, it is alternative for `VStackView` and `HStackView` and will be deprecated after iOS 14 is minimun in almost project.
+ 
+ If you wanna change background, border, shadow, ... in declarative style, consider wrapping `StackView` inside an `UIView`
+ */
 open class AlternateStackView: UIView {
     private(set) var leftPaddingConstraint: NSLayoutConstraint?
     private(set) var rightPaddingConstraint: NSLayoutConstraint?
@@ -29,6 +33,12 @@ open class AlternateStackView: UIView {
         let _views = views.compactMap { $0 }
         for (index, view) in _views.enumerated() {
             view.translatesAutoresizingMaskIntoConstraints = false
+            if view is StoreViewList {
+                #if DEBUG
+                fatalError("Don't use StoreViewList for render")
+                #endif
+                continue
+            }
             self.addSubview(view)
             if index == 0 {
                 if axis == .vertical {

@@ -46,8 +46,3 @@ extension UIView {
     }
 }
 
-extension UIEdgeInsets {
-    static public func allSides(_ side: CGFloat) -> UIEdgeInsets {
-        return .init(top: side, left: side, bottom: side, right: side)
-    }
-}

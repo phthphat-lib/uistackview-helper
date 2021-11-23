@@ -56,6 +56,7 @@ extension UIStackView {
 }
 
 extension UIStackView {
+    ///Core function of this library
     public func addArrangedSubviewList(_ views: [UIView?]) {
         let _views = views.compactMap { view -> UIView? in return view }
         for index in (0..<_views.count) {

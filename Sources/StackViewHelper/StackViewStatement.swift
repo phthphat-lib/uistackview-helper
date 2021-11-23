@@ -19,19 +19,21 @@ public func unwrap<T>(_ value: @autoclosure () -> T?, _ action: (T) -> UIView?) 
  Functions below combine with `addArrangedSubviewList` to make a decalrative stackview style
  */
 ///If condition is true, generate a view
-public func ifTrue(_ condition: @autoclosure () -> Bool, _ viewBuilder: @autoclosure () -> UIView?) -> UIView? {
+public func builder(
+    condition: @autoclosure () -> Bool = true,
+    viewRender: () -> UIView?
+) -> UIView? {
     if condition() {
-        return viewBuilder()
+        return viewRender()
     }
     return nil
 }
-
 
 public protocol StoreViewList {
     var views: [UIView] { get }
 }
 ///A class store a list view to be add to stackview via `addArrangedSubviewList`
-final public class ListView: UIView, StoreViewList {
+final public class ArrangeViewList: UIView, StoreViewList {
     public var views = [UIView]()
     /// Add a list view to parent is stackview
     public init(_ viewList: [UIView?]) {
