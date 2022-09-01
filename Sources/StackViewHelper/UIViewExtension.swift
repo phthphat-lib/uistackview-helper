@@ -40,7 +40,7 @@ extension UIView {
                 if let currIndex = stV.arrangedSubviews.firstIndex(of: self),
                    currIndex - 1 >= 0 {
                     let preView = stV.arrangedSubviews[currIndex - 1]
-                    let spaceAfter = (isHidden ? preView.spaceAfterInStackView : self.spaceBeforeInStackView) ?? stV.spacing
+                    let spaceAfter = (isHidden ? preView.spaceAfterInStackView : self.spaceBeforeInStackView) ?? (preView.spaceAfterInStackView ?? stV.spacing)
                     if #available(iOS 11.0, *) {
                         stV.setCustomSpacing(spaceAfter, after: preView)
                     } else {
@@ -48,6 +48,14 @@ extension UIView {
                     }
                 }
             }
+        }
+    }
+
+    ///The properties work best when used for a view which stacked in stackview
+    var isVisibleForStackView: Bool {
+        get { return !isHiddenForStackView }
+        set {
+            self.isHiddenForStackView = !newValue
         }
     }
 }

@@ -64,9 +64,25 @@ extension UIStackView {
             if let viewsListStore = view as? StoreViewList {
                 self.addArrangedSubviewList(viewsListStore.views)
                 continue
-            } else {
-                self.addArrangedSubview(view)
+            } 
+            self.addArrangedSubview(view)
+
+            if view.zIndexInStackView > 0 {
+                zIndexView[view] = view.zIndexInStackView
             }
+            if let multi = view.mainAxisRatioStackView {
+                var anchor: NSLayoutConstraint?
+                switch self.axis {
+                case .vertical:
+                    anchor = view.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: multi, constant: view.mainAxisConstantStackView)
+                case .horizontal:
+                    anchor = view.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: multi, constant: view.mainAxisConstantStackView)
+                @unknown default: break
+                }
+//                anchor?.priority = .
+                anchor?.isActive = true
+            }
+            
             if let space = view.spaceAfterInStackView {
                 if #available(iOS 11, *) {
                     self.setCustomSpacing(space, after: view)
